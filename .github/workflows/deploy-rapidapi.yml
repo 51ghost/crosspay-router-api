@@ -1,0 +1,30 @@
+name: Deploy to Railway + Update RapidAPI
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Railway
+        uses: bervProject/railway-deploy-action@v1
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
+
+  update-rapidapi:
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Update RapidAPI OpenAPI Spec
+        uses: vvatelot/rapidapi-openapi-github-action@v1
+        with:
+          rapidapi-api-key: ${{ secrets.RAPIDAPI_API_KEY }}
+          rapidapi_api_id: ${{ secrets.RAPIDAPI_API_ID }}
+          openapi_file: ./openapi.json
+          default_server_url: https://crosspay-router-api-production.up.railway.app
