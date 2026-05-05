@@ -1,0 +1,28 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pip install -r requirements.txt"
+  },
+  "deploy": {
+    "startCommand": "uvicorn main:app --host 0.0.0.0 --port $PORT",
+    "restartPolicyType": "ON_FAILURE",
+    "healthcheckPath": "/v1/health",
+    "healthcheckTimeout": 30,
+    "numReplicas": 1
+  },
+  "env": {
+    "CROSSPAY_API_KEY": {
+      "description": "API key for authenticating requests",
+      "default": "change-me-in-production"
+    },
+    "HOST": {
+      "description": "Server host",
+      "default": "0.0.0.0"
+    },
+    "PORT": {
+      "description": "Server port (set automatically by Railway)",
+      "default": "8000"
+    }
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "name": "CrossPay Router API",
+  "version": "1.0.0",
+  "description": "Cross-border payment routing API with live FX rates from the European Central Bank. Supports 170+ currencies, optimal route finding, fee estimation, and real-time currency conversion.",
+  "baseUrl": "https://crosspay-router-api.up.railway.app",
+  "endpoints": [
+    {
+      "path": "/v1/health",
+      "method": "GET",
+      "description": "Health check and system status",
+      "parameters": [],
+      "rateLimit": "100/min"
+    },
+    {
+      "path": "/v1/rates",
+      "method": "GET",
+      "description": "Get live foreign exchange rates",
+      "parameters": [
+        {
+          "name": "base",
+          "type": "string",
+          "required": false,
+          "default": "USD",
+          "description": "Base currency code (e.g., USD, EUR, GBP)"
+        },
+        {
+          "name": "symbols",
+          "type": "string",
+          "required": false,
+          "description": "Comma-separated target currency codes (optional, returns all if omitted)"
+        },
+        {
+          "name": "force_refresh",
+          "type": "boolean",
+          "required": false,
+          "default": false,
+          "description": "Bypass 5-minute cache"
+        }
+      ],
+      "rateLimit": "30/min"
+    },
+    {
+      "path": "/v1/convert",
+      "method": "POST",
+      "description": "Convert an amount between currencies using live rates",
+      "parameters": [
+        {
+          "name": "from",
+          "type": "string",
+          "required": true,
+          "description": "Source currency code"
+        },
+        {
+          "name": "to",
+          "type": "string",
+          "required": true,
+          "description": "Target currency code"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "Amount to convert (must be > 0)"
+        }
+      ],
+      "rateLimit": "30/min"
+    },
+    {
+      "path": "/v1/routes",
+      "method": "POST",
+      "description": "Find optimal payment routes between currencies (direct, via USD, via EUR)",
+      "parameters": [
+        {
+          "name": "from",
+          "type": "string",
+          "required": true,
+          "description": "Source currency code"
+        },
+        {
+          "name": "to",
+          "type": "string",
+          "required": true,
+          "description": "Target currency code"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "Amount to route"
+        }
+      ],
+      "rateLimit": "20/min"
+    },
+    {
+      "path": "/v1/fees",
+      "method": "POST",
+      "description": "Estimate transaction fees for a cross-border payment",
+      "parameters": [
+        {
+          "name": "from",
+          "type": "string",
+          "required": true,
+          "description": "Source currency code"
+        },
+        {
+          "name": "to",
+          "type": "string",
+          "required": true,
+          "description": "Target currency code"
+        },
+        {
+          "name": "amount",
+          "type": "number",
+          "required": true,
+          "description": "Payment amount"
+        }
+      ],
+      "rateLimit": "30/min"
+    }
+  ],
+  "authentication": {
+    "type": "api-key",
+    "header": "X-API-Key",
+    "notes": "For RapidAPI deployments, use the standard X-RapidAPI-Key header. Our API key is also accepted via X-RapidAPI-Proxy-Secret."
+  },
+  "pricing": {
+    "model": "usage-based",
+    "free_tier": {
+      "requests_per_month": 1000,
+      "rate_limit": "30/min"
+    },
+    "pro_tier": {
+      "requests_per_month": 100000,
+      "rate_limit": "300/min"
+    },
+    "enterprise_tier": {
+      "requests_per_month": "unlimited",
+      "rate_limit": "custom"
+    }
+  },
+  "sdks": {
+    "curl": "curl -X GET 'https://crosspay-router-api.up.railway.app/v1/rates?base=USD&symbols=EUR,GBP' -H 'X-API-Key: your-api-key'",
+    "python": "import requests\n\nheaders = {'X-API-Key': 'your-api-key'}\nresp = requests.get('https://crosspay-router-api.up.railway.app/v1/rates', params={'base': 'USD'}, headers=headers)\nprint(resp.json())",
+    "javascript": "fetch('https://crosspay-router-api.up.railway.app/v1/rates?base=USD&symbols=EUR,GBP', {\n  headers: { 'X-API-Key': 'your-api-key' }\n})\n.then(res => res.json())\n.then(console.log);"
+  }
+}
